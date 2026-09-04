@@ -1,12 +1,10 @@
-// ชี้ไปที่ window.location.hostname
-const API_BASE = `http://${window.location.hostname}:8000/api`;
-
-// โหลดข้อมูลทันทีที่เปิดเว็บ
+const API_BASE = 'https://qr-deploy-server.onrender.com/api';
+// load data when the page is ready
 document.addEventListener('DOMContentLoaded', loadData);
 
-// จัดการเมื่อกดปุ่ม Submit
+// handle form submission
 document.getElementById('dataForm').addEventListener('submit', async (e) => {
-    e.preventDefault(); // ป้องกันเว็บรีเฟรช
+    e.preventDefault(); // prevent page reload
 
     const submitBtn = document.querySelector('.btn-submit');
     submitBtn.textContent = 'Generating...';
@@ -27,7 +25,7 @@ document.getElementById('dataForm').addEventListener('submit', async (e) => {
 
         if (response.ok) {
             document.getElementById('dataForm').reset();
-            loadData(); // ดึงข้อมูลใหม่มาแสดง
+            loadData(); // fetch new data and display it
         } else {
             alert('Oops! Something went wrong.');
         }
@@ -40,10 +38,10 @@ document.getElementById('dataForm').addEventListener('submit', async (e) => {
     }
 });
 
-// ผูก Event Listener ให้ปุ่ม Clear All Data
+// handle clear data button click
 document.getElementById('btnClear').addEventListener('click', clearData);
 
-// ฟังก์ชันดึงข้อมูลมาแสดง
+// fetch and display data
 async function loadData() {
     const summaryPane = document.getElementById('summaryPane');
 
@@ -56,7 +54,7 @@ async function loadData() {
             return;
         }
 
-        // สร้าง HTML สำหรับข้อมูลแต่ละอัน
+        // generate HTML for each item
         summaryPane.innerHTML = data.map(item => `
             <div class="data-card">
                 <div class="data-info">
@@ -75,13 +73,13 @@ async function loadData() {
     }
 }
 
-// ฟังก์ชันล้างข้อมูลทั้งหมด
+// clear all data
 async function clearData() {
     if (!confirm('Are you sure you want to clear ALL data?!')) return;
 
     try {
         await fetch(`${API_BASE}/clear`, { method: 'DELETE' });
-        loadData(); // รีเฟรชหน้าจอให้ว่างเปล่า
+        loadData(); // refresh the page to show empty state
     } catch (error) {
         alert('Error clearing data!');
     }
